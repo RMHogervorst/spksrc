@@ -1,8 +1,8 @@
 PKG_NAME = tvheadend
 PKG_VERS = 4.3
 PKG_EXT = tar.gz
-# git hash from November 28th 2022
-PKG_GIT_HASH = d8854960361b0fb6846f0912f509dfad61f3ccbf
+# git hash from April 8th 2023
+PKG_GIT_HASH = f32c7c59a19a276648d7b068041738e4e8337638
 PKG_DIST_NAME = $(PKG_GIT_HASH).$(PKG_EXT)
 PKG_DIST_SITE = https://github.com/tvheadend/tvheadend/archive
 PKG_DIST_FILE = $(PKG_NAME)-git$(PKG_GIT_HASH).$(PKG_EXT)
@@ -12,6 +12,8 @@ DEPENDS  = cross/openssl cross/gnutls
 DEPENDS += cross/uriparser cross/pcre2 cross/libiconv cross/fontconfig
 DEPENDS += cross/libhdhomerun cross/libdvbcsa cross/dvb-apps cross/pngquant
 DEPENDS += cross/curl
+# curl build needs additional configuration for gnutls and libssh2
+export BUILD_CURL_WITH="gnutls libssh2 zstd"
 
 # PPC archs except qoriq are not supported
 # https://tvheadend.org/issues/5060
@@ -45,7 +47,7 @@ endif
 
 CONFIGURE_ARGS += --disable-ffmpeg_static --enable-libav
 ifeq ($(wildcard $(FFMPEG_DIR)),)
-DEPENDS += cross/ffmpeg
+DEPENDS += cross/ffmpeg$(FFMPEG_VERSION)
 endif
 
 ifeq ($(call version_ge, ${TCVERSION}, 7.0),1)

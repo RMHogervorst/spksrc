@@ -119,10 +119,7 @@ endif
 	echo ; \
 	echo "# search headers and libraries in the target environment" ; \
 	echo "set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY $(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY))" ; \
-	echo "set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE $(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE))" ; \
-	echo ; \
-	echo "# always build shared library" ; \
-	echo "set(BUILD_SHARED_LIBS $(BUILD_SHARED_LIBS))"
+	echo "set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE $(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE))"
 
 .PHONY: meson_vars
 meson_vars:
@@ -151,9 +148,9 @@ tc_vars: flag
 	    gcc_version=$$(eval $$(echo $(WORK_DIR)/$(TC_TARGET)/bin/$(TC_PREFIX)$${source} -dumpversion) 2>/dev/null || true) ; \
 	  fi ; \
 	done ; \
-	echo TC_ENV += CFLAGS=\"$(CFLAGS) $$\(ADDITIONAL_CFLAGS\)\" ; \
-	echo TC_ENV += CPPFLAGS=\"$(CPPFLAGS) $$\(ADDITIONAL_CPPFLAGS\)\" ; \
-	echo TC_ENV += CXXFLAGS=\"$(CXXFLAGS) $$\(ADDITIONAL_CXXFLAGS\)\" ; \
+	echo TC_ENV += CFLAGS=\"$(CFLAGS) $(GCC_DEBUG) $$\(ADDITIONAL_CFLAGS\)\" ; \
+	echo TC_ENV += CPPFLAGS=\"$(CPPFLAGS) $(GCC_DEBUG) $$\(ADDITIONAL_CPPFLAGS\)\" ; \
+	echo TC_ENV += CXXFLAGS=\"$(CXXFLAGS) $(GCC_DEBUG) $$\(ADDITIONAL_CXXFLAGS\)\" ; \
 	echo TC_ENV += LDFLAGS=\"$(LDFLAGS) $$\(ADDITIONAL_LDFLAGS\)\" ; \
 	echo TC_ENV += CARGO_HOME=\"$(realpath $(CARGO_HOME))\" ; \
 	echo TC_ENV += RUSTUP_HOME=\"$(realpath $(RUSTUP_HOME))\" ; \
@@ -162,12 +159,13 @@ tc_vars: flag
 	echo TC_ENV += CARGO_TARGET_$(shell echo $(RUST_TARGET) | tr - _ | tr a-z A-Z)_LINKER=\"$(WORK_DIR)/$(TC_TARGET)/bin/$(TC_PREFIX)gcc\" ; \
 	echo TC_CONFIGURE_ARGS := --host=$(TC_TARGET) --build=i686-pc-linux ; \
 	echo TC_TYPE := $(TC_TYPE) ; \
+	echo TC_SYSROOT := $(WORK_DIR)/$(TC_TARGET)/$(TC_SYSROOT) ; \
 	echo TC_TARGET := $(TC_TARGET) ; \
 	echo TC_PREFIX := $(TC_PREFIX) ; \
 	echo TC_PATH := $(WORK_DIR)/$(TC_TARGET)/bin/ ; \
-	echo CFLAGS := $(CFLAGS) $$\(ADDITIONAL_CFLAGS\) ; \
-	echo CPPFLAGS := $(CPPFLAGS) $$\(ADDITIONAL_CPPFLAGS\) ; \
-	echo CXXFLAGS := $(CXXFLAGS) $$\(ADDITIONAL_CXXFLAGS\) ; \
+	echo CFLAGS := $(CFLAGS) $(GCC_DEBUG) $$\(ADDITIONAL_CFLAGS\) ; \
+	echo CPPFLAGS := $(CPPFLAGS) $(GCC_DEBUG) $$\(ADDITIONAL_CPPFLAGS\) ; \
+	echo CXXFLAGS := $(CXXFLAGS) $(GCC_DEBUG) $$\(ADDITIONAL_CXXFLAGS\) ; \
 	echo LDFLAGS := $(LDFLAGS) $$\(ADDITIONAL_LDFLAGS\) ; \
 	echo TC_INCLUDE := $(TC_INCLUDE) ; \
 	echo TC_LIBRARY := $(TC_LIBRARY) ; \
